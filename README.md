@@ -1,81 +1,635 @@
-# Node Project Three - Authentication
+# Introduction
 
-In this project, you will build API for a bookstore and use Prisma with Supabase.
+## BOOKSTORE API Documentation
 
-In this project, you will be building a backend application for a bookstore. They want us to create for them a way to add books in their database and manage the information of their bookstore. The books will have authors.
-
-## Set Up The Project With Git
-
-**Follow these steps to set up and work on your project:**
-
-* [ ] Create a forked copy of this project.
-* [ ] Clone your OWN version of the repository (Not Gabi's by mistake!).
-* [ ] Create a new branch: git checkout -b `<firstName-lastName>`.
-* [ ] Implement the project on your newly created `<firstName-lastName>` branch, committing changes regularly.
-* [ ] Push commits: git push origin `<firstName-lastName>`.
+## Base URL 
+The base URL for this API is: `https://node-four-deploying.onrender.com`
 
 
-### Minimum Viable Product
+### Owner Sign-up and log in.
 
-#### Setup
+## Sign-up Owner
+Endpoint: `/api/owner/signup`
+Method: POST
 
-After cloning, Run `npm install`
+Request
+`{
+  "name": "ali Doli",
+  "email": "Doli@example.com",
+  "password": "securepassword"
+}`
 
- Your prisma has already some schema, you will need to change the `datasource db` inside your `prisma.schema` file to:
+`name` (string, required): The name of the owner.
+`email` (string, required): The email address of the owner.
+`password` (string, required): The owner's password.
 
- ```
- datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
+
+### Response (Success - 201 Created)
+
+`{
+  "message": "Owner creation successful",
+  "owner": {
+    "id": 1,
+     "name": "ali Doli",
+  "email": "Doli@example.com",
+  }
 }
- ```
-
-You will need to go ahead and create your model for `owner`
-
-Make sure your models and fields follow this instruction:
-
-1. bookstore - fields: id, ownerId, name, location, created, updated
-2. author - fields: id, name, created, updated.
-3. book - fields: id, authorId, bookstoreId, title, price, image, created, updated.
-4. owner - fields: id, name, email, password, created, updated
-
-You will also need to copy the code from your last project to complete this project.
-
-#### Add authentication
-
-In the `owner` file, add sign-up and login endpoints. The sign-up endpoint should create account for the owner and create a hashed password with `bcrypt` and store the information in the `Supabase` database.
-
-The login endpoint should generate a token you can for the frontend and to authenticate the current user. Use `JSON Web Tokens` or `JWT`.
-
-#### Add Middleware
-
-In the `middleware` folder, add a method to check if the user is authenticated. Use this method to check if user is logged in when making changes to the bookstore.
-
-#### Use Supabase database
-
-Instead of using SQLite database, change to Supabase by following this instruction:
-
-1. Sign up at supabase.com
-2. Create new project
-3. Inside the project you created, go to `Settings` and then click `Databases`
-4. Under `Connection string`, switch to `url` and copy the link.
-5. Create `.env` file in your project's root directory if you already don't have it.
-6. Add `DATABASE_URL='the url you copied'` in the .env file.
-7. Inside `prisma` folder, you will have `prisma.schema` file, change the `datasource` to
-
- ```
- datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
+`
+  
+Response (Error - 409 Conflict)
+`{
+  "message": "Owner already exists"
 }
- ```
+`
+
+Response (Error - 500 Internal Server Error)
+`{
+  "message": "Something went wrong",
+  "error": "Internal server error message"
+}`
 
 
-#### Delete what you don't need.
+## Login Owner
+Endpoint: `/api/owner/login`
+Method: POST
 
-Delete files such as the `SQLite` database, migrations and other files you don't need before pushing.
+### Request
 
-### Stretch Goals
+``{
+  "email": "john.doe@example.com",
+  "password": "securepassword"
+}``
 
-- Add a validation library such as `Zod` to validate the schema before adding anything to the database.
-- Create roles where the owner can add, update, delete everything but other users can only add or edit.
+`email` (string, required): The email address of the owner.
+`password` (string, required): The owner's password.
+
+
+``{
+  "message": "Owner logged in successfully",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}``
+
+`token` (string): JSON Web Token (JWT) for authentication.
+
+Response (Error - 401 Unauthorized)
+`{
+  "message": "Invalid credentials"
+}`
+
+Response (Error - 500 Internal Server Error)
+`{
+  "message": "Something went wrong",
+  "error": "Internal server error message"
+}`
+# Bookstore Endpoints 
+This API provides endpoints to manage bookstores. Authentication is required to access these endpoints using a JSON Web Token (JWT).
+
+## Authentication
+To access these endpoints, you need to include a valid JWT token in the request headers.
+
+Header: `Authorization`
+Value: `Bearer YOUR_TOKEN`
+
+## Get All Bookstores
+Endpoint: `/api/bookstore`
+Method: GET
+Request
+No request body is required.
+Response (Success - 200 OK)
+
+`[
+  {
+    "id": 1,
+    "ownerId": 1,
+    "name": "Bookstore 1",
+    "location": "Location 1"
+  },
+  {
+    "id": 2,
+    "ownerId": 2,
+    "name": "Bookstore 2",
+    "location": "Location 2"
+  }
+]
+`
+
+
+Response (Error - 404 Not Found)
+`{
+  "message": "BookStores not found"
+}`
+
+
+Response (Error - 500 Internal Server Error)
+
+{
+  "error": "Internal server error message"
+}
+
+
+## Get Bookstore by ID
+Endpoint: /api/bookstores/:id
+Method: GET
+
+Request
+No request body is required.
+
+Response (Success: 200 OK)
+`{
+  "id": 1,
+  "ownerId": 1,
+  "name": "Bookstore 1",
+  "location": "Location 1"
+}`
+
+Response (Error - 404 Not Found)
+
+`{
+  "message": "BookStore not found"
+}`
+
+Response (Error: 500 Internal Server Error)
+
+`{
+  "message": "Something went wrong",
+  "error": "Internal server error message"
+}`
+
+
+## Create Bookstore
+Endpoint: /api/bookstore
+Method: POST
+
+Request
+`{
+  "ownerId": 1,
+  "name": "New Bookstore",
+  "location": "New Location"
+}`
+
+ownerId (number, required): The ID of the owner.
+name (string, required): The name of the bookstore.
+location (string, required): The location of the bookstore.
+
+Response (Success: 200 OK)
+
+`{
+  "status": 200,
+"Message": "BookStore successfully created!",
+  "data": {
+    "id": 3,
+    "ownerId": 1,
+    "name": "New Bookstore",
+    "location": "New Location"
+  }
+}`
+
+Response (Error: 400 Bad Request)
+
+`{
+"Message": "BookStore was not created!"
+}`
+
+Response (Error: 500 Internal Server Error)
+
+`{
+  "status": 500,
+  "error": "Internal server error message"
+}`
+
+
+## Update Bookstore by ID
+Endpoint: /api/bookstore/:id
+Method: PUT
+
+`{
+  "ownerId": 1,
+  "name": "Updated Bookstore",
+  "location": "Updated Location"
+}`
+
+ownerId (number, required): The ID of the owner.
+name (string, required): The updated name of the bookstore.
+location (string, required): The updated location of the bookstore.
+Response (Success: 200 OK)
+
+`{
+  "status": 200,
+"Message": "BookStore successfully updated!",
+  "data": {
+    "id": 1,
+    "ownerId": 1,
+    "name": "Updated Bookstore",
+    "location": "Updated Location"
+  }
+}`
+
+Response (Error: 404 Not Found)
+
+`{
+"Message": "BookStore was not updated!"
+}`
+
+Response (Error: 500 Internal Server Error)
+
+`{
+  "message": "Something went wrong",
+  "error": "Internal server error message"
+}`
+
+## Delete Bookstore by ID
+Endpoint: `/api/bookstore/:id`
+Method: DELETE
+
+Request
+No request body is required.
+
+Response (Success: 200 OK)
+
+`{
+"message": "BookStore successfully deleted!"
+}`
+
+Response (Error: 404 Not Found)
+
+`{
+"Message": "BookStore was not deleted!"
+}`
+
+Response (Error: 500 Internal Server Error)
+
+`{
+  "message": "Something went wrong",
+  "error": "Internal server error message"
+}`
+
+
+
+# Book Endpoints Documentation
+# Introduction
+This API provides endpoints to manage books. Authentication is required to access these endpoints using a JSON Web Token (JWT).
+
+# Authentication
+To access these endpoints, you need to include a valid JWT token in the request headers.
+
+# Authentication
+To access these endpoints, you need to include a valid JWT token in the request headers.
+Header: `Authorization`
+Value:  `Bearer YOUR_TOKEN`
+
+## Get All Books
+Endpoint: `/api/book`
+Method: GET
+
+Request
+No request body is required.
+Response (Success: 200 OK)
+
+`[
+  {
+    "id": 1,
+    "bookstoreId": 1,
+    "authorId": 1,
+    "title": "Book 1",
+    "price": 19.99,
+    "image": "book1.jpg"
+  },
+  {
+    "id": 2,
+    "bookstoreId": 2,
+    "authorId": 2,
+    "title": "Book 2",
+    "price": 24.99,
+    "image": "book2.jpg"
+  }
+]
+`
+
+Response (Error: 404 Not Found)
+
+`{
+  "status": 404,
+"Message": "Books not found!"
+}`
+
+Response (Error: 500 Internal Server Error)
+
+`{
+  "status": 500,
+  "error": "Internal server error message"
+}`
+
+## Get Book by ID
+Endpoint: `/api/book/:id`
+Method: GET
+
+Request
+No request body is required.
+
+Response (Success: 200 OK)
+
+`{
+  "id": 1,
+  "bookstoreId": 1,
+  "authorId": 1,
+  "title": "Book 1",
+  "price": 19.99,
+  "image": "book1.jpg"
+}`
+
+Response (Error: 404 Not Found)
+
+`{
+  "status": 404,
+  "message": "Book not found"
+}`
+
+Response (Error: 500 Internal Server Error)
+
+`{
+  "status": 500,
+  "message": "Internal server error message"
+}`
+
+
+
+
+## Create Book
+Endpoint: /api/books
+Method: POST
+
+Request
+`{
+  "bookstoreId": 1,
+  "authorId": 1,
+  "title": "New Book",
+  "price": 29.99,
+  "image": "newbook.jpg"
+}`
+
+bookstoreId (number, required): The ID of the bookstore.
+authorId (number, required): The ID of the author.
+title (string, required): The title of the book.
+price (number, required): The price of the book.
+image (string): The image URL of the book.
+Response (Success - 200 OK)
+
+`{
+  "message": "Book successfully created!",
+  "newBook": {
+    "id": 3,
+    "bookstoreId": 1,
+    "authorId": 1,
+    "title": "New Book",
+    "price": 29.99,
+    "image": "newbook.jpg"
+  }
+}`
+
+Response (Error: 400 Bad Request)
+
+`{
+  "message": "Book was not created!"
+}`
+
+Response (Error - 500 Internal Server Error)
+
+`{
+  "status": 500,
+  "message": "Internal server error message"
+}`
+
+## Update Book
+Endpoint: `/api/books/:id`
+Method: PUT
+
+Request
+`{
+  "bookstoreId": 1,
+  "authorId": 2,
+  "title": "Updated Book",
+  "price": 39.99,
+  "image": "updatedbook.jpg"
+}`
+
+bookstoreId (number, required): The updated ID of the bookstore.
+authorId (number, required): The updated ID of the author.
+title (string, required): The updated title of the book.
+price (number, required): The updated price of the book.
+image (string): The updated image URL of the book.
+
+Response (Success: 200 OK)
+
+`{
+  "status": 200,
+  "message": "Book successfully updated",
+  "updateBook": {
+    "id": 1,
+    "bookstoreId": 1,
+    "authorId": 2,
+    "title": "Updated Book",
+    "price": 39.99,
+    "image": "updatedbook.jpg"
+  }
+}`
+
+Response (Error: 404 Not Found)
+
+`{
+  "status": 404,
+"Message": "Book was not updated!"
+}`
+Response (Error: 500 Internal Server Error)
+
+`{
+  "status": 500,
+  "message": "Internal server error message"
+}`
+
+## Delete Book 
+Endpoint: `/api/books/:id`
+Method: DELETE
+
+Request
+No request body is required.
+
+Response (Success: 200 OK)
+`{
+  "message": "Book successfully deleted"
+}`
+
+Response (Error: 404 Not Found)
+
+`{
+"Message": "Book was not deleted!"
+}`
+
+Response (Error: 500 Internal Server Error)
+
+`{
+  "message": "Internal server error message"
+}`
+
+
+
+# Author Endpoints Documentation
+
+## Get All Authors
+Endpoint: `/api/author`
+Method: GET
+
+Request
+No request body is required.
+
+Response (Success - 200 OK)
+
+`[
+  {
+    "id": 1,
+    "name": "Author 1"
+  },
+  {
+    "id": 2,
+    "name": "Author 2"
+  }
+]`
+
+Response (Error - 404 Not Found)
+
+`{
+  "status": 404,
+  "message": "Authors not found"
+}`
+
+Response (Error: 500 Internal Server Error)
+
+`{
+  "status": 500,
+  "error": "Internal server error message"
+}`
+
+
+## Get Author by ID
+Endpoint: /api/author/:id
+Method: GET
+
+Request
+No request body is required.
+
+Response (Success - 200 OK)
+
+`{
+  "id": 1,
+  "name": "Author 1"
+}`
+
+Response (Error: 404 Not Found)
+
+`{
+  "status": 404,
+  "message": "Author not found"
+}`
+
+Response (Error: 500 Internal Server Error)
+
+
+`{
+  "status": 500,
+  "message": "Internal server error message"
+}`
+
+## Create Author
+Endpoint: /api/author
+Method: POST
+
+Request
+
+`{
+  "name": "New Author"
+}`
+
+name (string, required): The name of the author.
+Response (Success: 201 Created)
+
+`{
+  "status": 201,
+  "message": "Author successfully created!",
+  "data": {
+    "id": 3,
+    "name": "New Author"
+  }
+}`
+
+Response (Error - 500 Internal Server Error)
+
+`{
+  "status": 500,
+  "message": "Internal server error message"
+}`
+
+## Update Author by ID
+Endpoint: /api/author/:id
+Method: PUT
+
+Request
+
+`{
+  "name": "Updated Author"
+}`
+
+name (string, required): The updated name of the author.
+Response (Success - 200 OK)
+
+`{
+  "status": 200,
+  "message": "Author successfully updated!",
+  "data": {
+    "id": 1,
+    "name": "Updated Author"
+  }
+}`
+Response (Error - 404 Not Found)
+
+`{
+  "status": 404,
+  "message": "Author was not updated!"
+}`
+
+Response (Error - 500 Internal Server Error)
+
+`{
+  "status": 500,
+  "message": "Internal server error message"
+}
+`
+
+## Delete Author by ID
+Endpoint: /api/author/:id
+Method: DELETE
+
+Request
+No request body is required.
+
+Response (Success - 200 OK)
+
+`{
+  "message": "Author successfully deleted"
+}`
+
+Response (Error - 404 Not Found)
+
+`{
+  "status": 404,
+  "message": "Author was not deleted!"
+}`
+
+Response (Error: 500 Internal Server Error)
+
+`{
+  "status": 500,
+  "message": "Internal server error message"
+}`
+
+
+
+

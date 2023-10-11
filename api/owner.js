@@ -4,28 +4,22 @@ import prisma from "./lib/index.js";
 import Jwt from "jsonwebtoken";
 import 'dotenv/config'
 const SECRET_KEY = process.env.SECRET_KEY
-
-
 const router = express.Router();
 
 router.post("/signup", async (req, res) =>{
   const {name, email, password} = req.body
 
   try{
-
-    
     const existingOwner = await prisma.owner.findUnique({
       where:{
         email: email,
       }  
     })
-
     if(existingOwner){
       return res.status(409).json({
         message: 'owner is alredy exist'
       })
     }
-
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const newOwner = await prisma.owner.create({
