@@ -3,7 +3,7 @@
 ##  API Documentation
 
  
-The base URL for this API is: ``
+The base URL for this API is: `sugnio`
 
 
 ### Owner Sign-up and log in.
@@ -278,7 +278,7 @@ Header: `Authorization`
 Value:  `Bearer YOUR_TOKEN`
 
 ## Get All Books
-Endpoint: `/api/book`
+Endpoint: `/api/books`
 Method: GET
 
 Request
