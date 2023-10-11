@@ -1,9 +1,9 @@
 # Introduction
 
-## BOOKSTORE API Documentation
+##  API Documentation
 
-## Base URL 
-The base URL for this API is: `https://node-four-deploying.onrender.com`
+ 
+The base URL for this API is: ``
 
 
 ### Owner Sign-up and log in.
@@ -14,8 +14,8 @@ Method: POST
 
 Request
 `{
-  "name": "ali Doli",
-  "email": "Doli@example.com",
+  "name": " xabib",
+  "email": "xabiib@example.com",
   "password": "securepassword"
 }`
 
@@ -30,8 +30,8 @@ Request
   "message": "Owner creation successful",
   "owner": {
     "id": 1,
-     "name": "ali Doli",
-  "email": "Doli@example.com",
+     "name": "xabiib",
+  "email": "xabib@example.com",
   }
 }
 `
@@ -56,7 +56,7 @@ Method: POST
 ### Request
 
 ``{
-  "email": "john.doe@example.com",
+  "email": "saro.doe@example.com",
   "password": "securepassword"
 }``
 
