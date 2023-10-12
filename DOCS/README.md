@@ -1,13 +1,14 @@
 # API DOCUMENTATION
 
 This document provides detailed information about the API endpoints and their usage for bookDb.
+
 `BASE_URL : https://mahad-axmed-guuleed.onrender.com`
 
-## ##[Authentication](*)
+## Authentication
 
 Most endpoints in the API require authentication using JSON Web Tokens (JWT). To authenticate, include the Authorization header in the request with the JWT. The header should be in the format: Bearer <token>, where <token> is the JWT obtained during the login process.
 
-## ##[EndPoints]()
+##EndPoints
 
 ##### Owner Registration
 
@@ -238,7 +239,7 @@ update specific book by it's id
 }
 ```
 
-### [Delete Book]()
+### Delete Book
 
 **Endpoint:** `DELETE /api/owner/:id`
 delete by it's id
@@ -251,7 +252,7 @@ delete by it's id
 }
 ```
 
-### [Create Bookstore]()
+### Create Bookstore
 
 **Endpoint:** `POST /api/store`
 
@@ -272,7 +273,7 @@ create new book store by authenticated owner
 }
 ```
 
-### [Get all bookstore]()
+### Get all bookstore
 
 **Endpoint:** `GET /api/store`
 
@@ -295,7 +296,7 @@ Receive all bookstores
 ]
 ```
 
-### [Get store by id]()
+### Get store by id
 
 **Endpoint:** `GET /api/store/:id`
 
