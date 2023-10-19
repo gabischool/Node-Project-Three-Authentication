@@ -1,1 +1,0 @@
-// Create endpoints for bookstores, make sure to use the middleware to authenticate the token
