@@ -4,6 +4,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { author_routes } from './api/routes/author_routes.js'
 import { owner_routes } from './api/routes/owner_routes.js';
+import { bookstore_routes } from './api/routes/bookstore_routes.js';
 
 const PORT = 9000;
 const app = express()
@@ -12,6 +13,7 @@ app.use(cors())
 app.use(cookieParser())
 app.use('/api', author_routes)
 app.use('/api', owner_routes)
+app.use('/api', bookstore_routes)
 
 app.listen(PORT, () => {
     console.log(`listening on ${PORT}`);
